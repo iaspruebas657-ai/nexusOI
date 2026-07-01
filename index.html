@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Nexus OS - Daily Execution Operating System">
+    <meta name="theme-color" content="#6366f1">
+    <title>Nexus OS: Execution System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    colors: {
+                        slate: { 850: '#1e293b', 950: '#0f172a' },
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+        .dark .custom-scrollbar::-webkit-scrollbar-thumb { background: #475569; }
+        .hidden { display: none !important; }
+    </style>
+</head>
+
+<body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-sans antialiased h-screen overflow-hidden flex transition-colors duration-300">
+
+    <!-- Sidebar -->
+    <aside id="sidebar" class="fixed inset-y-0 left-0 w-64 bg-slate-950 text-white flex flex-col z-30 transform -translate-x-full lg:translate-x-0 lg:static transition-transform shadow-2xl">
+        <div class="h-16 flex items-center justify-between px-6 border-b border-slate-800">
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 bg-indigo-600 rounded flex items-center justify-center text-white shadow-lg">
+                    <i class="fas fa-rocket"></i>
+                </div>
+                <span class="text-xl font-extrabold tracking-tight">NEXUS<span class="text-indigo-400 font-light">OS</span></span>
+            </div>
+            <button id="btn-close-sidebar" class="lg:hidden text-slate-400 hover:text-white"><i class="fas fa-times"></i></button>
+        </div>
+
+        <!-- Progress Header -->
+        <div class="px-6 py-4 bg-slate-900 border-b border-slate-800">
+            <div class="flex justify-between items-end mb-1">
+                <span class="text-xs text-indigo-400 font-bold uppercase tracking-wider">Kaizen Lvl <span id="nav-level">1</span></span>
+                <span class="text-xs text-slate-400"><span id="nav-xp">0</span> XP</span>
+            </div>
+            <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+                <div id="nav-xp-bar" class="bg-indigo-500 h-2 rounded-full transition-all" style="width: 0%"></div>
+            </div>
+            <div class="mt-2 text-xs text-slate-400 flex justify-between">
+                <span>Día <span id="nav-day">1</span>/30</span>
+                <span>🔥 <span id="nav-streak">0</span></span>
+            </div>
+        </div>
+
+        <!-- Navigation -->
+        <nav class="flex-1 py-4 space-y-1 px-3 overflow-y-auto custom-scrollbar">
+            <button id="nav-dashboard" class="nav-btn flex items-center w-full px-3 py-3 text-sm font-medium rounded-lg text-white bg-slate-800 border-l-4 border-indigo-500 transition-all">
+                <i class="fas fa-home w-6 text-center text-lg text-indigo-400"></i>
+                <span class="ml-3">Dashboard</span>
+            </button>
+            <button id="nav-mission" class="nav-btn flex items-center w-full px-3 py-3 text-sm font-medium rounded-lg text-slate-400 hover:bg-slate-800 hover:text-white border-l-4 border-transparent transition-all opacity-50 cursor-not-allowed" disabled>
+                <i class="fas fa-crosshairs w-6 text-center text-lg"></i>
+                <span class="ml-3">Daily Mission</span>
+                <i class="fas fa-lock ml-auto text-xs"></i>
+            </button>
+            <button id="nav-progress" class="nav-btn flex items-center w-full px-3 py-3 text-sm font-medium rounded-lg text-slate-400 hover:bg-slate-800 hover:text-white border-l-4 border-transparent transition-all">
+                <i class="fas fa-map w-6 text-center text-lg"></i>
+                <span class="ml-3">Journey Map</span>
+            </button>
+            <button id="nav-settings" class="nav-btn flex items-center w-full px-3 py-3 text-sm font-medium rounded-lg text-slate-400 hover:bg-slate-800 hover:text-white border-l-4 border-transparent transition-all mt-8">
+                <i class="fas fa-cog w-6 text-center text-lg"></i>
+                <span class="ml-3">Configuración</span>
+            </button>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 flex flex-col h-full overflow-hidden bg-slate-100 dark:bg-slate-900">
+        <!-- Header -->
+        <header class="h-16 bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 flex justify-between items-center px-4 lg:px-8 shrink-0">
+            <div class="flex items-center gap-4">
+                <button id="btn-open-sidebar" class="lg:hidden text-slate-500 hover:text-indigo-600"><i class="fas fa-bars text-xl"></i></button>
+                <h1 id="page-title" class="text-xl font-bold text-slate-800 dark:text-white">Dashboard</h1>
+            </div>
+            <button id="btn-theme-toggle" class="p-2 text-slate-500 dark:text-yellow-400 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg">
+                <i class="fas fa-sun dark:hidden"></i>
+                <i class="fas fa-moon hidden dark:inline"></i>
+            </button>
+        </header>
+
+        <!-- Views Container -->
+        <div class="flex-1 overflow-y-auto p-4 lg:p-8 custom-scrollbar">
+
+            <!-- DASHBOARD VIEW -->
+            <section id="view-dashboard" class="max-w-5xl mx-auto space-y-6">
+                <!-- User State -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div class="bg-white dark:bg-slate-800 p-4 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700">
+                        <p class="text-xs font-bold text-slate-500 uppercase tracking-wider">Kaizen Level</p>
+                        <h3 id="dash-level" class="text-3xl font-black text-indigo-600 mt-1">1</h3>
+                    </div>
+                    <div class="bg-white dark:bg-slate-800 p-4 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700">
+                        <p class="text-xs font-bold text-slate-500 uppercase tracking-wider">XP Total</p>
+                        <h3 id="dash-xp" class="text-3xl font-black text-blue-500 mt-1">0</h3>
+                    </div>
+                    <div class="bg-white dark:bg-slate-800 p-4 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700">
+                        <p class="text-xs font-bold text-slate-500 uppercase tracking-wider">Días Consecutivos</p>
+                        <h3 id="dash-streak" class="text-3xl font-black text-orange-500 mt-1">0</h3>
+                    </div>
+                    <div class="bg-white dark:bg-slate-800 p-4 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700">
+                        <p class="text-xs font-bold text-slate-500 uppercase tracking-wider">Status</p>
+                        <h3 id="dash-status" class="text-xl font-black text-emerald-500 mt-1 uppercase mt-3">ACTIVO</h3>
+                    </div>
+                </div>
+
+                <!-- Primary Action Card -->
+                <div class="bg-gradient-to-br from-indigo-600 to-violet-800 rounded-2xl p-8 text-white shadow-xl relative overflow-hidden">
+                    <div class="absolute top-0 right-0 -mt-10 -mr-10 text-indigo-500 opacity-20">
+                        <i class="fas fa-crosshairs text-[200px]"></i>
+                    </div>
+                    <div class="relative z-10">
+                        <span class="bg-white/20 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest backdrop-blur-sm">ACCIÓN REQUERIDA HOY</span>
+                        <h2 id="dash-mission-title" class="text-3xl md:text-4xl font-black mt-4 mb-2">Día 1: Misión de Prueba</h2>
+                        <p id="dash-mission-desc" class="text-indigo-100 text-lg mb-8 max-w-2xl">Descripción de la misión que el usuario debe ejecutar el día de hoy sin excusas.</p>
+                        
+                        <div class="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
+                            <button id="btn-start-mission" class="bg-white text-indigo-700 hover:bg-slate-50 px-8 py-4 rounded-xl font-black text-lg shadow-lg transform hover:scale-105 transition-all">
+                                <i class="fas fa-play mr-2"></i> START MISSION
+                            </button>
+                            <div class="text-sm text-indigo-200">
+                                <p><i class="fas fa-clock mr-1"></i> Est. ~30 mins</p>
+                                <p><i class="fas fa-file-alt mr-1"></i> Output requerido</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Program Progress -->
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700">
+                    <div class="flex justify-between items-end mb-2">
+                        <h3 class="font-bold text-slate-800 dark:text-white">Progreso del Programa (30 Días)</h3>
+                        <span id="dash-progress-text" class="text-sm font-bold text-indigo-600">Día 1 de 30</span>
+                    </div>
+                    <div class="w-full bg-slate-100 dark:bg-slate-700 h-4 rounded-full overflow-hidden">
+                        <div id="dash-progress-bar" class="bg-indigo-500 h-4 transition-all" style="width: 3.33%"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- DAILY MISSION VIEW -->
+            <section id="view-mission" class="hidden max-w-4xl mx-auto space-y-6">
+                <!-- Context Panel -->
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700">
+                    <h2 id="mission-title" class="text-2xl font-black text-slate-800 dark:text-white mb-2">Título de la Misión</h2>
+                    <div class="bg-indigo-50 dark:bg-indigo-900/20 p-4 rounded-lg text-sm text-indigo-900 dark:text-indigo-200 mb-4">
+                        <strong><i class="fas fa-info-circle mr-1"></i> Contexto:</strong> <span id="mission-context">Contexto aquí...</span>
+                    </div>
+                    <div class="bg-amber-50 dark:bg-amber-900/20 p-4 rounded-lg text-sm text-amber-900 dark:text-amber-200">
+                        <strong><i class="fas fa-lightbulb mr-1"></i> Por qué importa para el negocio:</strong> <span id="mission-reason">Razón aquí...</span>
+                    </div>
+                </div>
+
+                <!-- Checklist -->
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700">
+                    <h3 class="font-bold text-slate-800 dark:text-white mb-4 text-lg">Checklist de Ejecución</h3>
+                    <div id="mission-tasks" class="space-y-3">
+                        <!-- Generado por JS -->
+                    </div>
+                </div>
+
+                <!-- Evidence Submission -->
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700">
+                    <h3 class="font-bold text-slate-800 dark:text-white mb-2 text-lg">Entregable Requerido</h3>
+                    <p class="text-sm text-slate-500 dark:text-slate-400 mb-4" id="mission-output">Sube tu evidencia aquí.</p>
+                    
+                    <textarea id="evidence-text" rows="4" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-600 rounded-lg p-3 text-sm focus:border-indigo-500 outline-none dark:text-white mb-4" placeholder="Escribe tu entregable o pega un link aquí..."></textarea>
+                    
+                    <div class="flex items-center gap-4">
+                        <button id="btn-complete-mission" class="bg-slate-300 text-slate-500 cursor-not-allowed px-8 py-3 rounded-xl font-bold text-lg transition-all flex-1" disabled>
+                            <i class="fas fa-lock mr-2"></i> COMPLETE MISSION
+                        </button>
+                    </div>
+                    <p id="mission-warning" class="text-xs text-red-500 mt-2 text-center">Debes completar el checklist y proveer evidencia para avanzar.</p>
+                </div>
+            </section>
+
+            <!-- PROGRESS VIEW (JOURNEY MAP) -->
+            <section id="view-progress" class="hidden max-w-5xl mx-auto space-y-6">
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 text-center">
+                    <h2 class="text-2xl font-black text-slate-800 dark:text-white mb-2">Roadmap (30 Días)</h2>
+                    <p class="text-slate-500">Tu viaje hacia la ejecución constante.</p>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700">
+                        <h3 class="font-bold text-lg mb-4 text-slate-800 dark:text-white">Semana 1: Descubrimiento</h3>
+                        <div class="space-y-2" id="week-1-progress">
+                            <!-- JS fill -->
+                        </div>
+                    </div>
+                    <div class="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700">
+                        <h3 class="font-bold text-lg mb-4 text-slate-800 dark:text-white">Semana 2: Validación</h3>
+                        <div class="space-y-2 opacity-50" id="week-2-progress">
+                            <p class="text-sm text-slate-500">Bloqueado. Completa la Semana 1.</p>
+                        </div>
+                    </div>
+                    <div class="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700">
+                        <h3 class="font-bold text-lg mb-4 text-slate-800 dark:text-white">Semana 3: Construcción</h3>
+                        <div class="space-y-2 opacity-50" id="week-3-progress">
+                            <p class="text-sm text-slate-500">Bloqueado.</p>
+                        </div>
+                    </div>
+                    <div class="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700">
+                        <h3 class="font-bold text-lg mb-4 text-slate-800 dark:text-white">Semana 4: Ejecución</h3>
+                        <div class="space-y-2 opacity-50" id="week-4-progress">
+                            <p class="text-sm text-slate-500">Bloqueado.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SETTINGS VIEW -->
+            <section id="view-settings" class="hidden max-w-3xl mx-auto space-y-6">
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700">
+                    <h2 class="text-lg font-bold text-slate-800 dark:text-white mb-4">Configuración del Sistema</h2>
+                    <button id="btn-reset-progress" class="bg-red-50 text-red-600 hover:bg-red-100 border border-red-200 px-4 py-2 rounded-lg font-bold text-sm transition-colors">
+                        <i class="fas fa-exclamation-triangle mr-2"></i> Reiniciar Progreso (Peligro)
+                    </button>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <!-- App Scripts -->
+    <script type="module" src="app.js"></script>
+</body>
+</html>
