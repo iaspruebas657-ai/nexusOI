@@ -23,10 +23,6 @@ class DEOSApp {
         const saved = localStorage.getItem('nexus_deos_state');
         if (saved) {
             this.state = JSON.parse(saved);
-        } else {
-            // Check if old CRM data exists and nuke it for safety in MVP
-            localStorage.removeItem('nexus_state');
-            this.saveData();
         }
     }
 
@@ -53,17 +49,27 @@ class DEOSApp {
             document.documentElement.classList.toggle('dark');
         });
 
-        // Settings
+        // Settings - Reset Demo
         document.getElementById('btn-reset-progress').addEventListener('click', () => {
-            if (confirm('⚠️ ¿Estás seguro de reiniciar todo tu progreso? Esto no se puede deshacer.')) {
+            if (confirm('⚠️ ¿Estás seguro de reiniciar todo tu progreso? Volverás al Día 1.')) {
                 localStorage.removeItem('nexus_deos_state');
                 location.reload();
             }
         });
 
+        // Settings - Export Progress
+        document.getElementById('btn-export-progress').addEventListener('click', () => this.exportProgress());
+
         // Mission Logic
         document.getElementById('evidence-text').addEventListener('input', () => this.validateMissionCompletion());
         document.getElementById('btn-complete-mission').addEventListener('click', () => this.completeMission());
+        
+        // Modal logic
+        document.getElementById('btn-close-modal').addEventListener('click', () => {
+            this.hideModal();
+            this.renderDashboard();
+            this.navigate('dashboard');
+        });
     }
 
     static navigate(view) {
@@ -98,11 +104,12 @@ class DEOSApp {
     }
 
     static getCurrentMission() {
-        return MISSIONS.find(m => m.day_number === this.state.user.current_day) || MISSIONS[MISSIONS.length - 1];
+        return MISSIONS.find(m => m.day === this.state.user.current_day) || MISSIONS[MISSIONS.length - 1];
     }
 
     static renderDashboard() {
         const u = this.state.user;
+        const mission = this.getCurrentMission();
         
         // Update Sidebar
         document.getElementById('nav-level').textContent = u.kaizen_level;
@@ -116,32 +123,35 @@ class DEOSApp {
 
         // Update Dashboard Stats
         document.getElementById('dash-level').textContent = u.kaizen_level;
-        document.getElementById('dash-xp').textContent = u.xp_total;
         document.getElementById('dash-streak').textContent = u.streak_days;
-        document.getElementById('dash-status').textContent = u.status;
-
+        
         // Update Action Card
-        const mission = this.getCurrentMission();
         document.getElementById('dash-mission-title').textContent = mission.title;
-        document.getElementById('dash-mission-desc').textContent = mission.description;
+        document.getElementById('dash-mission-time').textContent = mission.estimated_time;
+        document.getElementById('dash-mission-stage').textContent = mission.orbita_stage;
 
         // Progress
-        document.getElementById('dash-progress-text').textContent = `Día ${u.current_day} de 30`;
-        document.getElementById('dash-progress-bar').style.width = `${(u.current_day / 30) * 100}%`;
+        document.getElementById('dash-current-day').textContent = u.current_day;
+        const totalProgress = Math.round((u.current_day / 30) * 100);
+        document.getElementById('dash-progress-text').textContent = `${totalProgress}% Completado`;
+        document.getElementById('dash-progress-bar').style.width = `${totalProgress}%`;
     }
 
     static renderMission() {
         const mission = this.getCurrentMission();
         document.getElementById('mission-title').textContent = mission.title;
+        document.getElementById('mission-badge').textContent = `Fase: ${mission.phase} | Etapa ÓRBITA: ${mission.orbita_stage}`;
         document.getElementById('mission-context').textContent = mission.context;
         document.getElementById('mission-reason').textContent = mission.business_reason;
+        
         document.getElementById('mission-output').textContent = mission.expected_output;
+        document.getElementById('evidence-text').placeholder = mission.evidence_placeholder || "Ingresa tu evidencia aquí...";
 
         const tasksContainer = document.getElementById('mission-tasks');
         tasksContainer.innerHTML = mission.tasks.map((t, index) => `
-            <label class="flex items-start gap-3 p-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg cursor-pointer hover:bg-slate-100 transition-colors">
-                <input type="checkbox" class="mission-checkbox mt-1 w-5 h-5 accent-indigo-600" data-index="${index}">
-                <span class="text-slate-700 dark:text-slate-300">${t.description}</span>
+            <label class="flex items-start gap-4 p-4 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl cursor-pointer hover:bg-slate-100 transition-colors">
+                <input type="checkbox" class="mission-checkbox mt-1 w-6 h-6 accent-indigo-600 rounded" data-index="${index}">
+                <span class="text-slate-700 dark:text-slate-300 font-medium">${t.text}</span>
             </label>
         `).join('');
 
@@ -163,17 +173,18 @@ class DEOSApp {
         const btn = document.getElementById('btn-complete-mission');
         const warning = document.getElementById('mission-warning');
 
-        if (allChecked && evidenceText.length > 5) {
+        // Validation rule: Must have checked all checkboxes and evidence must be >= 5 chars
+        if (allChecked && evidenceText.length >= 5) {
             btn.disabled = false;
             btn.classList.remove('bg-slate-300', 'text-slate-500', 'cursor-not-allowed');
             btn.classList.add('bg-indigo-600', 'text-white', 'hover:bg-indigo-700', 'hover:scale-105');
-            btn.innerHTML = '<i class="fas fa-check-circle mr-2"></i> COMPLETE MISSION';
+            btn.innerHTML = '<i class="fas fa-check-circle mr-2"></i> Completar misión';
             warning.classList.add('hidden');
         } else {
             btn.disabled = true;
             btn.classList.add('bg-slate-300', 'text-slate-500', 'cursor-not-allowed');
             btn.classList.remove('bg-indigo-600', 'text-white', 'hover:bg-indigo-700', 'hover:scale-105');
-            btn.innerHTML = '<i class="fas fa-lock mr-2"></i> COMPLETE MISSION';
+            btn.innerHTML = '<i class="fas fa-lock mr-2"></i> Completar misión';
             warning.classList.remove('hidden');
         }
     }
@@ -192,13 +203,15 @@ class DEOSApp {
         });
 
         // Update User Progression
-        this.state.user.xp_total += 500;
+        const xpReward = mission.xp_reward || 50;
+        this.state.user.xp_total += xpReward;
         this.state.user.streak_days += 1;
         
-        // Level up logic (simple)
+        // Level up logic
+        let levelUp = false;
         if (this.state.user.xp_total >= this.state.user.kaizen_level * 1000) {
             this.state.user.kaizen_level += 1;
-            alert(`🎉 ¡KAIZEN LEVEL UP! Nivel ${this.state.user.kaizen_level}`);
+            levelUp = true;
         }
 
         // Advance Day
@@ -208,11 +221,51 @@ class DEOSApp {
 
         this.saveData();
         
-        // Visual Feedback
-        alert('✅ Misión completada. Has ganado 500 XP.');
+        // Show Success Modal
+        this.showSuccessModal(xpReward, this.getCurrentMission().title, levelUp);
+    }
+
+    static showSuccessModal(xpGained, nextMissionTitle, levelUp) {
+        document.getElementById('modal-xp-gained').textContent = \`+\${xpGained} XP\`;
+        document.getElementById('modal-next-mission').textContent = nextMissionTitle;
         
-        this.renderDashboard();
-        this.navigate('dashboard');
+        if (levelUp) {
+            document.getElementById('modal-xp-gained').textContent += \` | ¡KAIZEN LEVEL UP! Nivel \${this.state.user.kaizen_level}\`;
+        }
+
+        const modal = document.getElementById('modal-success');
+        const modalContent = document.getElementById('modal-success-content');
+        
+        modal.classList.remove('hidden');
+        // Trigger reflow for animation
+        void modal.offsetWidth;
+        
+        modal.classList.remove('opacity-0');
+        modalContent.classList.remove('scale-95');
+        modalContent.classList.add('scale-100');
+    }
+
+    static hideModal() {
+        const modal = document.getElementById('modal-success');
+        const modalContent = document.getElementById('modal-success-content');
+        
+        modal.classList.add('opacity-0');
+        modalContent.classList.remove('scale-100');
+        modalContent.classList.add('scale-95');
+        
+        setTimeout(() => {
+            modal.classList.add('hidden');
+        }, 300); // Matches transition duration
+    }
+
+    static exportProgress() {
+        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(this.state, null, 2));
+        const downloadAnchorNode = document.createElement('a');
+        downloadAnchorNode.setAttribute("href", dataStr);
+        downloadAnchorNode.setAttribute("download", `deos_progreso_dia_${this.state.user.current_day}.json`);
+        document.body.appendChild(downloadAnchorNode);
+        downloadAnchorNode.click();
+        downloadAnchorNode.remove();
     }
 
     static renderProgress() {
@@ -227,22 +280,27 @@ class DEOSApp {
                 container.classList.remove('opacity-50');
                 let html = '';
                 for (let d = startDay; d <= endDay; d++) {
-                    const status = d < currentDay ? 'bg-green-500 text-white' : (d === currentDay ? 'bg-indigo-500 text-white animate-pulse' : 'bg-slate-200 dark:bg-slate-700 text-slate-400');
+                    const status = d < currentDay ? 'bg-green-500 text-white shadow-md' : (d === currentDay ? 'bg-indigo-500 text-white animate-pulse shadow-md' : 'bg-slate-200 dark:bg-slate-700 text-slate-400');
                     const icon = d < currentDay ? 'fa-check' : (d === currentDay ? 'fa-crosshairs' : 'fa-lock');
                     
+                    const m = MISSIONS.find(mx => mx.day === d) || { title: `Misión ${d}` };
+                    
                     html += `
-                        <div class="flex items-center gap-3 p-2 rounded-lg ${d === currentDay ? 'bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-200 dark:border-indigo-800' : ''}">
-                            <div class="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold ${status}">
+                        <div class="flex items-center gap-3 p-3 rounded-xl transition-all ${d === currentDay ? 'bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-200 dark:border-indigo-800' : 'hover:bg-slate-50 dark:hover:bg-slate-800 border border-transparent'}">
+                            <div class="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold shrink-0 ${status}">
                                 <i class="fas ${icon}"></i>
                             </div>
-                            <span class="text-sm font-bold ${d <= currentDay ? 'text-slate-800 dark:text-white' : 'text-slate-400'}">Día ${d}</span>
+                            <div class="flex flex-col min-w-0">
+                                <span class="text-xs font-bold text-slate-500">Día ${d}</span>
+                                <span class="text-sm font-bold truncate ${d <= currentDay ? 'text-slate-800 dark:text-white' : 'text-slate-400'}">${m.title}</span>
+                            </div>
                         </div>
                     `;
                 }
                 container.innerHTML = html;
             } else {
                 container.classList.add('opacity-50');
-                container.innerHTML = `<p class="text-sm text-slate-500"><i class="fas fa-lock mr-1"></i> Bloqueado.</p>`;
+                container.innerHTML = `<div class="p-4 bg-slate-100 dark:bg-slate-900 rounded-xl text-center"><p class="text-sm text-slate-500"><i class="fas fa-lock mb-2 block text-2xl"></i> Semana Bloqueada</p></div>`;
             }
         }
     }
