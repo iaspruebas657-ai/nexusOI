@@ -1,4 +1,14 @@
-import { MISSIONS } from './data/missions.mock.js';
+// No import needed, loaded via script tag: window.MISSIONS
+
+if (!window.MISSIONS || !Array.isArray(window.MISSIONS) || window.MISSIONS.length === 0) {
+  console.error("MISSIONS NOT LOADED");
+  document.body.innerHTML = `
+    <div style="padding:40px;font-family:sans-serif">
+      <h1 style="color:red;font-weight:bold;">Error de carga fatal</h1>
+      <p>No se pudieron cargar las misiones. Revisar <strong>data/missions.mock.js</strong>.</p>
+    </div>
+  `;
+}
 
 class DEOSApp {
     static state = {
@@ -148,7 +158,7 @@ class DEOSApp {
     }
 
     static getCurrentMission() {
-        return MISSIONS.find(m => m.day === this.state.user.current_day) || MISSIONS[MISSIONS.length - 1];
+        return window.MISSIONS.find(m => m.day === this.state.user.current_day) || window.MISSIONS[window.MISSIONS.length - 1];
     }
 
     static renderDashboard() {
@@ -330,7 +340,7 @@ class DEOSApp {
                     const status = d < currentDay ? 'bg-green-500 text-white shadow-md' : (d === currentDay ? 'bg-indigo-500 text-white animate-pulse shadow-md' : 'bg-slate-200 dark:bg-slate-700 text-slate-400');
                     const icon = d < currentDay ? 'fa-check' : (d === currentDay ? 'fa-crosshairs' : 'fa-lock');
                     
-                    const m = MISSIONS.find(mx => mx.day === d) || { title: `Misión ${d}` };
+                    const m = window.MISSIONS.find(mx => mx.day === d) || { title: `Misión ${d}` };
                     
                     html += `
                         <div class="flex items-center gap-3 p-3 rounded-xl transition-all ${d === currentDay ? 'bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-200 dark:border-indigo-800' : 'hover:bg-slate-50 dark:hover:bg-slate-800 border border-transparent'}">
@@ -354,13 +364,11 @@ class DEOSApp {
 }
 
 function initApp() {
+    console.log("NEXUS BUILD VERSION: DEOS-QA-001");
     console.log("INIT APP OK");
     DEOSApp.init();
 }
 
-// Attach exactly as requested, but handle module deferred timing safely
-if (document.readyState === 'loading') {
-    document.addEventListener("DOMContentLoaded", initApp);
-} else {
+document.addEventListener("DOMContentLoaded", () => {
     initApp();
-}
+});

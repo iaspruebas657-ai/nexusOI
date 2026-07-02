@@ -1,4 +1,4 @@
-export const MISSIONS = [
+window.MISSIONS = [
   {
     "id": "MIS-001",
     "day": 1,

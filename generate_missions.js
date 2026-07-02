@@ -99,7 +99,7 @@ missions[0] = {
   status: "unlocked"
 };
 
-const output = `export const MISSIONS = ${JSON.stringify(missions, null, 2)};\n`;
+const output = `window.MISSIONS = ${JSON.stringify(missions, null, 2)};\n`;
 
 fs.writeFileSync('./data/missions.mock.js', output, 'utf8');
 console.log('Missions generated.');
