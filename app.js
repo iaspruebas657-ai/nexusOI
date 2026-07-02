@@ -10,6 +10,7 @@ class DEOSApp {
             current_day: 1,
             status: 'active'
         },
+        missions: [],
         evidence: []
     };
 
@@ -27,14 +28,22 @@ class DEOSApp {
     }
 
     static loadData() {
-        const saved = localStorage.getItem('nexus_deos_state');
-        if (saved) {
-            this.state = JSON.parse(saved);
+        try {
+            const saved = localStorage.getItem('nexus_deos_state');
+            if (saved) {
+                this.state = JSON.parse(saved);
+            }
+        } catch (e) {
+            console.error("Error loading state:", e);
         }
     }
 
     static saveData() {
-        localStorage.setItem('nexus_deos_state', JSON.stringify(this.state));
+        try {
+            localStorage.setItem('nexus_deos_state', JSON.stringify(this.state));
+        } catch (e) {
+            console.error("Error saving state:", e);
+        }
     }
 
     static setupEventListeners() {
@@ -344,5 +353,14 @@ class DEOSApp {
     }
 }
 
-// Initialize immediately (type="module" defers execution automatically)
-DEOSApp.init();
+const initApp = () => {
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => DEOSApp.init());
+    } else {
+        DEOSApp.init();
+    }
+};
+
+// Global assignment if needed for external debugging
+window.initApp = initApp;
+initApp();
