@@ -11,19 +11,6 @@ if (!window.MISSIONS || !Array.isArray(window.MISSIONS) || window.MISSIONS.lengt
 }
 
 class DEOSApp {
-    static state = {
-        user: {
-            name: '',
-            kaizen_level: 1,
-            xp_total: 0,
-            streak_days: 0,
-            current_day: 1,
-            status: 'active'
-        },
-        missions: [],
-        evidence: []
-    };
-
     static init() {
         console.log('🚀 Nexus OS (DEOS) Iniciado');
         this.loadData();
@@ -362,6 +349,19 @@ class DEOSApp {
         }
     }
 }
+
+DEOSApp.state = {
+    user: {
+        name: '',
+        kaizen_level: 1,
+        xp_total: 0,
+        streak_days: 0,
+        current_day: 1,
+        status: 'active'
+    },
+    missions: [],
+    evidence: []
+};
 
 function initApp() {
     console.log("NEXUS BUILD VERSION: DEOS-QA-001");
