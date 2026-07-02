@@ -3,6 +3,7 @@ import { MISSIONS } from './data/missions.mock.js';
 class DEOSApp {
     static state = {
         user: {
+            name: '',
             kaizen_level: 1,
             xp_total: 0,
             streak_days: 0,
@@ -16,7 +17,13 @@ class DEOSApp {
         console.log('🚀 Nexus OS (DEOS) Iniciado');
         this.loadData();
         this.setupEventListeners();
-        this.renderDashboard();
+        
+        if (!this.state.user.name) {
+            this.navigate('onboarding');
+        } else {
+            this.renderDashboard();
+            this.navigate('dashboard');
+        }
     }
 
     static loadData() {
@@ -31,6 +38,22 @@ class DEOSApp {
     }
 
     static setupEventListeners() {
+        // Onboarding
+        document.getElementById('btn-start-onboarding').addEventListener('click', () => {
+            const input = document.getElementById('input-user-name');
+            const error = document.getElementById('onboarding-error');
+            const name = input.value.trim();
+            if (name.length >= 2) {
+                this.state.user.name = name;
+                this.saveData();
+                error.classList.add('hidden');
+                this.renderDashboard();
+                this.navigate('dashboard');
+            } else {
+                error.classList.remove('hidden');
+            }
+        });
+
         // Navigation
         document.getElementById('nav-dashboard').addEventListener('click', () => this.navigate('dashboard'));
         document.getElementById('nav-progress').addEventListener('click', () => {
@@ -73,10 +96,22 @@ class DEOSApp {
     }
 
     static navigate(view) {
-        ['view-dashboard', 'view-mission', 'view-progress', 'view-settings'].forEach(id => {
+        ['view-onboarding', 'view-dashboard', 'view-mission', 'view-progress', 'view-settings'].forEach(id => {
             document.getElementById(id).classList.add('hidden');
         });
         document.getElementById(`view-${view}`).classList.remove('hidden');
+
+        // Hide sidebar on onboarding
+        const sidebar = document.getElementById('sidebar');
+        if (view === 'onboarding') {
+            sidebar.classList.add('hidden');
+            sidebar.classList.remove('flex');
+            document.querySelector('header').classList.add('hidden');
+        } else {
+            sidebar.classList.remove('hidden');
+            sidebar.classList.add('flex');
+            document.querySelector('header').classList.remove('hidden');
+        }
 
         // Update nav UI
         document.querySelectorAll('.nav-btn').forEach(btn => {
@@ -111,6 +146,9 @@ class DEOSApp {
         const u = this.state.user;
         const mission = this.getCurrentMission();
         
+        // Greeting
+        document.getElementById('dash-greeting').textContent = `Hola, ${u.name || 'Emprendedor'}`;
+
         // Update Sidebar
         document.getElementById('nav-level').textContent = u.kaizen_level;
         document.getElementById('nav-xp').textContent = u.xp_total;
@@ -306,4 +344,5 @@ class DEOSApp {
     }
 }
 
-document.addEventListener('DOMContentLoaded', () => DEOSApp.init());
+// Initialize immediately (type="module" defers execution automatically)
+DEOSApp.init();
