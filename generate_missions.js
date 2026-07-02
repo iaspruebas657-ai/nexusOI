@@ -2,10 +2,10 @@ const fs = require('fs');
 
 const orbitas = ['Organización', 'Ruta de oportunidad', 'Base comercial', 'Impacto de marketing', 'Tracking', 'Automatización/alianzas'];
 const weeks = [
-    { phase: 'Discovery', startDay: 1, endDay: 7 },
-    { phase: 'Validation', startDay: 8, endDay: 14 },
-    { phase: 'Build Offer', startDay: 15, endDay: 21 },
-    { phase: 'Execution & Sales', startDay: 22, endDay: 30 }
+    { phase: 'Descubrimiento', startDay: 1, endDay: 7 },
+    { phase: 'Validación', startDay: 8, endDay: 14 },
+    { phase: 'Construcción', startDay: 15, endDay: 21 },
+    { phase: 'Ejecución', startDay: 22, endDay: 30 }
 ];
 
 const missionTemplates = [
@@ -79,21 +79,21 @@ missions[0] = {
   id: "MIS-001",
   day: 1,
   week: 1,
-  phase: "Discovery",
+  phase: "Descubrimiento",
   orbita_stage: "Organización",
   title: "Diagnóstico inicial del emprendedor",
-  context: "Hoy vas a definir tu punto de partida para saber qué ruta seguir.",
-  business_reason: "Un emprendedor desordenado necesita claridad antes de elegir qué vender o cómo avanzar.",
+  context: "Hoy vas a definir tu punto de partida para saber en qué etapa estás y qué necesitas ordenar primero.",
+  business_reason: "Antes de vender, crear contenido o buscar oportunidades, necesitas claridad. Un emprendedor desordenado pierde tiempo, energía y foco.",
   estimated_time: "20 min",
   tasks: [
-    { id: "t1", text: "Completa tu diagnóstico inicial", completed: false },
-    { id: "t2", text: "Define tu objetivo principal de 30 días", completed: false },
-    { id: "t3", text: "Escribe tu principal bloqueo actual", completed: false }
+    { id: "t1", text: "Define si hoy estás sin producto, con producto o con negocio activo.", completed: false },
+    { id: "t2", text: "Escribe cuál es tu principal objetivo para los próximos 30 días.", completed: false },
+    { id: "t3", text: "Identifica tu principal bloqueo actual como emprendedor.", completed: false }
   ],
-  expected_output: "Diagnóstico + objetivo de 30 días",
+  expected_output: "Diagnóstico personal + objetivo de 30 días + bloqueo principal identificado.",
   evidence_type: ["text", "link", "image"],
-  evidence_placeholder: "Escribe tu objetivo de 30 días y tu principal bloqueo actual.",
-  approval_criteria: "Debe incluir objetivo, situación actual y bloqueo principal.",
+  evidence_placeholder: "Escribe tu etapa actual, tu objetivo de 30 días y tu principal bloqueo.",
+  approval_criteria: "La evidencia debe incluir etapa actual, objetivo concreto y bloqueo principal.",
   xp_reward: 50,
   badge_unlock: null,
   status: "unlocked"

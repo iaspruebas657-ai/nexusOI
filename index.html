@@ -49,7 +49,7 @@
         <!-- Progress Header -->
         <div class="px-6 py-4 bg-slate-900 border-b border-slate-800">
             <div class="flex justify-between items-end mb-1">
-                <span class="text-xs text-indigo-400 font-bold uppercase tracking-wider">Kaizen Lvl <span id="nav-level">1</span></span>
+                <span class="text-xs text-indigo-400 font-bold uppercase tracking-wider">Nivel Kaizen <span id="nav-level">1</span></span>
                 <span class="text-xs text-slate-400"><span id="nav-xp">0</span> XP</span>
             </div>
             <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
@@ -108,10 +108,11 @@
                         <i class="fas fa-crosshairs text-[300px]"></i>
                     </div>
                     <div class="relative z-10">
-                        <span class="bg-white/20 px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest backdrop-blur-sm">Esto es lo que harás hoy</span>
+                        <span class="bg-white/20 px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest backdrop-blur-sm">Hoy solo debes enfocarte en una cosa:</span>
                         <h2 id="dash-mission-title" class="text-4xl md:text-5xl font-black mt-6 mb-4 leading-tight">Día 1: Misión de Prueba</h2>
                         
                         <div class="flex flex-col sm:flex-row gap-6 items-start sm:items-center mt-10">
+                            <p class="text-indigo-100 text-lg md:text-xl font-medium w-full mt-4 mb-4">Completa esta misión para avanzar al siguiente paso de tu negocio.</p>
                             <button id="btn-start-mission" class="bg-white text-indigo-700 hover:bg-slate-50 px-10 py-5 rounded-2xl font-black text-xl shadow-xl transform hover:scale-105 transition-all w-full sm:w-auto text-center">
                                 Empezar misión <i class="fas fa-arrow-right ml-2"></i>
                             </button>
@@ -137,7 +138,7 @@
                     </div>
                     
                     <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 text-center flex flex-col justify-center">
-                        <p class="text-xs font-bold text-slate-500 uppercase tracking-wider">Kaizen Lvl</p>
+                        <p class="text-xs font-bold text-slate-500 uppercase tracking-wider">Nivel Kaizen</p>
                         <h3 id="dash-level" class="text-2xl font-black text-indigo-600 mt-1">1</h3>
                     </div>
                     <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 text-center flex flex-col justify-center">
@@ -196,24 +197,24 @@
             <section id="view-progress" class="hidden max-w-5xl mx-auto space-y-6">
                 <div class="bg-white dark:bg-slate-800 p-8 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 text-center">
                     <h2 class="text-3xl font-black text-slate-800 dark:text-white mb-2">Ruta de Avance</h2>
-                    <p class="text-slate-500">El mapa de tus 30 días de ejecución implacable.</p>
+                    <p class="text-slate-500">Tu mapa de 30 días para avanzar paso a paso con claridad.</p>
                 </div>
                 
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                     <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700">
-                        <h3 class="font-bold text-lg mb-4 text-slate-800 dark:text-white">S1: Discovery</h3>
+                        <h3 class="font-bold text-lg mb-4 text-slate-800 dark:text-white">Semana 1: Descubrimiento</h3>
                         <div class="space-y-3" id="week-1-progress"></div>
                     </div>
                     <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700">
-                        <h3 class="font-bold text-lg mb-4 text-slate-800 dark:text-white">S2: Validación</h3>
+                        <h3 class="font-bold text-lg mb-4 text-slate-800 dark:text-white">Semana 2: Validación</h3>
                         <div class="space-y-3" id="week-2-progress"></div>
                     </div>
                     <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700">
-                        <h3 class="font-bold text-lg mb-4 text-slate-800 dark:text-white">S3: Construcción</h3>
+                        <h3 class="font-bold text-lg mb-4 text-slate-800 dark:text-white">Semana 3: Construcción</h3>
                         <div class="space-y-3" id="week-3-progress"></div>
                     </div>
                     <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700">
-                        <h3 class="font-bold text-lg mb-4 text-slate-800 dark:text-white">S4: Ejecución</h3>
+                        <h3 class="font-bold text-lg mb-4 text-slate-800 dark:text-white">Semana 4: Ejecución</h3>
                         <div class="space-y-3" id="week-4-progress"></div>
                     </div>
                 </div>
@@ -237,7 +238,7 @@
 
                         <div class="p-4 bg-red-50 dark:bg-red-900/10 rounded-xl border border-red-200 dark:border-red-900/30 flex justify-between items-center">
                             <div>
-                                <h4 class="font-bold text-red-800 dark:text-red-400">Reset Demo Progress</h4>
+                                <h4 class="font-bold text-red-800 dark:text-red-400">Reiniciar progreso demo</h4>
                                 <p class="text-sm text-red-600 dark:text-red-500">Borra todo tu avance y regresa al Día 1.</p>
                             </div>
                             <button id="btn-reset-progress" class="bg-white dark:bg-slate-800 text-red-600 border border-red-200 dark:border-red-800 hover:bg-red-50 dark:hover:bg-red-900/20 px-4 py-2 rounded-lg font-bold text-sm transition-colors">

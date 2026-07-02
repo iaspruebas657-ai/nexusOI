@@ -132,7 +132,7 @@ class DEOSApp {
 
         // Progress
         document.getElementById('dash-current-day').textContent = u.current_day;
-        const totalProgress = Math.round((u.current_day / 30) * 100);
+        const totalProgress = Math.round(((u.current_day - 1) / 30) * 100);
         document.getElementById('dash-progress-text').textContent = `${totalProgress}% Completado`;
         document.getElementById('dash-progress-bar').style.width = `${totalProgress}%`;
     }
