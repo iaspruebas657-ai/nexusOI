@@ -353,14 +353,14 @@ class DEOSApp {
     }
 }
 
-const initApp = () => {
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', () => DEOSApp.init());
-    } else {
-        DEOSApp.init();
-    }
-};
+function initApp() {
+    console.log("INIT APP OK");
+    DEOSApp.init();
+}
 
-// Global assignment if needed for external debugging
-window.initApp = initApp;
-initApp();
+// Attach exactly as requested, but handle module deferred timing safely
+if (document.readyState === 'loading') {
+    document.addEventListener("DOMContentLoaded", initApp);
+} else {
+    initApp();
+}
