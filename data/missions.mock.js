@@ -4,25 +4,30 @@ window.MISSIONS = [
     "day": 1,
     "week": 1,
     "phase": "Descubrimiento",
-    "orbita_stage": "Organización",
-    "title": "Diagnóstico inicial del emprendedor",
-    "context": "Hoy vas a definir tu punto de partida para saber en qué etapa estás y qué necesitas ordenar primero.",
-    "business_reason": "Antes de vender, crear contenido o buscar oportunidades, necesitas claridad. Un emprendedor desordenado pierde tiempo, energía y foco.",
+    "orbita_stage": "Claridad inicial",
+    "title": "Define tu punto de partida",
+    "context": "Muchos emprendedores se bloquean porque quieren vender, publicar o usar inteligencia artificial sin tener claro qué están construyendo. Esta primera misión te ayuda a ordenar tus ideas antes de avanzar.",
+    "business_reason": "Cuando sabes desde dónde partes, puedes tomar mejores decisiones, elegir mejores acciones y evitar perder tiempo haciendo cosas que no ayudan a tu negocio.",
     "estimated_time": "20 min",
     "tasks": [
       {
         "id": "t1",
-        "text": "Define si hoy estás sin producto, con producto o con negocio activo.",
+        "text": "Escribe si estás empezando desde cero o si ya tienes un negocio.",
         "completed": false
       },
       {
         "id": "t2",
-        "text": "Escribe cuál es tu principal objetivo para los próximos 30 días.",
+        "text": "Describe en una frase qué vendes o qué te gustaría vender.",
         "completed": false
       },
       {
         "id": "t3",
-        "text": "Identifica tu principal bloqueo actual como emprendedor.",
+        "text": "Escribe cuál es tu mayor problema actual: no tengo idea, no consigo clientes, no sé vender, no sé organizarme o no sé usar herramientas digitales.",
+        "completed": false
+      },
+      {
+        "id": "t4",
+        "text": "Define qué resultado te gustaría lograr en los próximos 30 días.",
         "completed": false
       }
     ],
