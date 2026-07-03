@@ -1,3 +1,4 @@
+alert("NEXUS BUILD DEOS-QA-001: JAVASCRIPT CARGADO");
 // No import needed, loaded via script tag: window.MISSIONS
 
 if (!window.MISSIONS || !Array.isArray(window.MISSIONS) || window.MISSIONS.length === 0) {
